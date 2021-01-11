@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlay,
@@ -9,11 +9,13 @@ import {
 
 function MusicPlayer({
   currentSong,
+  SetCurrentSong,
   isPlaying,
   setIsPlaying,
   audioRef,
   songInfo,
   setSongInfo,
+  songs,
 }) {
   const playSongHandler = () => {
     if (isPlaying) {
@@ -36,6 +38,24 @@ function MusicPlayer({
     setSongInfo({ ...songInfo, currentTime: e.target.value });
   };
 
+  const skipTrackHandler = (direction) => {
+    let currentSongIndex = songs.findIndex(
+      (song) => song.id === currentSong.id
+    );
+
+    if (direction === "skip-forward") {
+      //we set the currentSong and we assure that we are not outside of the array boundaries.
+      SetCurrentSong(songs[(currentSongIndex + 1) % songs.length]);
+    } else {
+      //if we are not in the array boundaries we set the currentSong to the last song in the songsArray and we return.
+      if ((currentSongIndex - 1) % songs.length === -1) {
+        SetCurrentSong(songs[songs.length - 1]);
+        return;
+      }
+      SetCurrentSong(songs[(currentSongIndex + -1) % songs.length]);
+    }
+  };
+
   return (
     <div className="music-player">
       <div className="time-control">
@@ -52,6 +72,7 @@ function MusicPlayer({
       <div className="play-control">
         <FontAwesomeIcon
           className="skip-back"
+          onClick={() => skipTrackHandler("skip-back")}
           size="2x"
           icon={faAngleDoubleLeft}
         />
@@ -63,6 +84,7 @@ function MusicPlayer({
         />
         <FontAwesomeIcon
           className="skip-forward"
+          onClick={() => skipTrackHandler("skip-forward")}
           size="2x"
           icon={faAngleDoubleRight}
         />
