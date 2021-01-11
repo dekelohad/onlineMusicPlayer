@@ -7,7 +7,14 @@ import {
   faAngleDoubleRight,
 } from "@fortawesome/free-solid-svg-icons";
 
-function MusicPlayer({ currentSong, isPlaying, setIsPlaying, audioRef,songInfo, setSongInfo}) {
+function MusicPlayer({
+  currentSong,
+  isPlaying,
+  setIsPlaying,
+  audioRef,
+  songInfo,
+  setSongInfo,
+}) {
   const playSongHandler = () => {
     if (isPlaying) {
       audioRef.current.pause();
@@ -29,15 +36,13 @@ function MusicPlayer({ currentSong, isPlaying, setIsPlaying, audioRef,songInfo, 
     setSongInfo({ ...songInfo, currentTime: e.target.value });
   };
 
- 
-
   return (
     <div className="music-player">
       <div className="time-control">
         <p>{getTime(songInfo.currentTime)}</p>
         <input
           min={0}
-          max={songInfo.duration}
+          max={songInfo.duration || 0}
           value={songInfo.currentTime}
           onChange={dragHandler}
           type="range"
