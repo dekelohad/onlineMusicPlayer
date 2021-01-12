@@ -26,7 +26,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-
+  margin-left:10rem;
   width: 40%;
   svg {
     cursor: pointer;
@@ -67,5 +67,12 @@ input[type="range"]::-webkit-slider-thumb {
   }
   .play-control {
     width: 80%;
+      margin-left:3rem;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .play-control {
+      margin-left:2rem;
   }
 }
