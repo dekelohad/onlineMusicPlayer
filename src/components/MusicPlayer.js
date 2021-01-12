@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlay,
@@ -18,9 +18,9 @@ function MusicPlayer({
   setSongs,
   songs,
 }) {
-  useEffect(() => {
+  const activeLibraryHandler = (nextPrev) => {
     const newSongs = songs.map((song) => {
-      if (song.id === currentSong.id) {
+      if (song.id === nextPrev.id) {
         return {
           ...song,
           active: true,
@@ -33,7 +33,7 @@ function MusicPlayer({
       }
     });
     setSongs(newSongs);
-  }, [currentSong]);
+  };
 
   const playSongHandler = () => {
     if (isPlaying) {
@@ -56,21 +56,29 @@ function MusicPlayer({
     setSongInfo({ ...songInfo, currentTime: e.target.value });
   };
 
-  const skipTrackHandler = (direction) => {
+  const skipTrackHandler = async (direction) => {
     let currentSongIndex = songs.findIndex(
       (song) => song.id === currentSong.id
     );
-
     if (direction === "skip-forward") {
       //we set the currentSong and we assure that we are not outside of the array boundaries.
-      SetCurrentSong(songs[(currentSongIndex + 1) % songs.length]);
+      await SetCurrentSong(songs[(currentSongIndex + 1) % songs.length]);
+      activeLibraryHandler(songs[(currentSongIndex + 1) % songs.length]);
     } else {
       //if we are not in the array boundaries we set the currentSong to the last song in the songsArray and we return.
       if ((currentSongIndex - 1) % songs.length === -1) {
-        SetCurrentSong(songs[songs.length - 1]);
+        await SetCurrentSong(songs[songs.length - 1]);
+        activeLibraryHandler(songs[songs.length - 1]);
+        if (isPlaying) {
+          audioRef.current.play();
+        }
         return;
       }
-      SetCurrentSong(songs[(currentSongIndex + -1) % songs.length]);
+      await SetCurrentSong(songs[(currentSongIndex + -1) % songs.length]);
+      activeLibraryHandler(songs[(currentSongIndex - 1) % songs.length]);
+      if (isPlaying) {
+        audioRef.current.play();
+      }
     }
   };
 
@@ -85,7 +93,7 @@ function MusicPlayer({
           onChange={dragHandler}
           type="range"
         />
-        <p>{getTime(songInfo.duration)}</p>
+        <p>{songInfo.duration ? getTime(songInfo.duration) : "0:00"}</p>
       </div>
       <div className="play-control">
         <FontAwesomeIcon
