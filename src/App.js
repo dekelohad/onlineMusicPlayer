@@ -19,7 +19,16 @@ function App() {
   const timeUpdateHandler = (e) => {
     const currentTime = e.target.currentTime;
     const duration = e.target.duration;
-    setSongInfo({ ...songInfo, currentTime, duration });
+    const roundedCurrent = Math.round(currentTime);
+    const roundedDuration = Math.round(duration);
+    const percentage = Math.round((roundedCurrent / roundedDuration) * 100);
+    setSongInfo({
+      ...songInfo,
+      currentTime,
+      duration,
+      animationPercentage: percentage,
+      volume: e.target.volume,
+    });
   };
 
   const songEndHandler = async () => {
@@ -35,7 +44,7 @@ function App() {
   return (
     <div>
       <Nav libraryStatus={libraryStatus} setLibraryStatus={setLibraryStatus} />
-      <Song currentSong={currentSong} />
+      <Song currentSong={currentSong} isPlaying={isPlaying} />
       <MusicPlayer
         isPlaying={isPlaying}
         setIsPlaying={setIsPlaying}
