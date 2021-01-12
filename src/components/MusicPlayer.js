@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlay,
   faPause,
   faAngleDoubleLeft,
   faAngleDoubleRight,
+  faVolumeDown,
 } from "@fortawesome/free-solid-svg-icons";
 
 function MusicPlayer({
@@ -18,6 +19,7 @@ function MusicPlayer({
   setSongs,
   songs,
 }) {
+  const [activeVolume, setActiveVolume] = useState(false);
   const activeLibraryHandler = (nextPrev) => {
     const newSongs = songs.map((song) => {
       if (song.id === nextPrev.id) {
@@ -82,6 +84,12 @@ function MusicPlayer({
     }
   };
 
+  const changeVolume = (e) => {
+    let value = e.target.value;
+    audioRef.current.volume = value;
+    setSongInfo({ ...songInfo, volume: value });
+  };
+
   return (
     <div className="music-player">
       <div className="time-control">
@@ -114,6 +122,20 @@ function MusicPlayer({
           size="2x"
           icon={faAngleDoubleRight}
         />
+        <FontAwesomeIcon
+          onClick={() => setActiveVolume(!activeVolume)}
+          icon={faVolumeDown}
+        />
+        {activeVolume && (
+          <input
+            onChange={changeVolume}
+            value={songInfo.volume}
+            max="1"
+            min="0"
+            step="0.01"
+            type="range"
+          />
+        )}
       </div>
     </div>
   );
