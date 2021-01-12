@@ -63,16 +63,14 @@ function MusicPlayer({
   };
 
   const skipTrackHandler = async (direction) => {
-    let currentSongIndex = songs.findIndex(
-      (song) => song.id === currentSong.id
-    );
+    let currentIndex = songs.findIndex((song) => song.id === currentSong.id);
     if (direction === "skip-forward") {
       //we set the currentSong and we assure that we are not outside of the array boundaries.
-      await SetCurrentSong(songs[(currentSongIndex + 1) % songs.length]);
-      activeLibraryHandler(songs[(currentSongIndex + 1) % songs.length]);
+      await SetCurrentSong(songs[(currentIndex + 1) % songs.length]);
+      activeLibraryHandler(songs[(currentIndex + 1) % songs.length]);
     } else {
       //if we are not in the array boundaries we set the currentSong to the last song in the songsArray and we return.
-      if ((currentSongIndex - 1) % songs.length === -1) {
+      if ((currentIndex - 1) % songs.length === -1) {
         await SetCurrentSong(songs[songs.length - 1]);
         activeLibraryHandler(songs[songs.length - 1]);
         if (isPlaying) {
@@ -80,11 +78,11 @@ function MusicPlayer({
         }
         return;
       }
-      await SetCurrentSong(songs[(currentSongIndex + -1) % songs.length]);
-      activeLibraryHandler(songs[(currentSongIndex - 1) % songs.length]);
-      if (isPlaying) {
-        audioRef.current.play();
-      }
+      await SetCurrentSong(songs[(currentIndex - 1) % songs.length]);
+      activeLibraryHandler(songs[(currentIndex - 1) % songs.length]);
+    }
+    if (isPlaying) {
+      audioRef.current.play();
     }
   };
 
